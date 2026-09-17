@@ -10,26 +10,23 @@ ModelType = TypeVar("ModelType", bound=Base)
 class BaseRepository(Generic[ModelType]):
     model: type[ModelType]
 
-    def __init__(self, session: Session) -> None:
-        self.session = session
+    def get(self, session: Session, pk: int) -> ModelType | None:
+        return session.get(self.model, pk)
 
-    def get(self, pk: int) -> ModelType | None:
-        return self.session.get(self.model, pk)
+    def get_all(self, session: Session) -> list[ModelType]:
+        return list(session.query(self.model).all())
 
-    def get_all(self) -> list[ModelType]:
-        return list(self.session.query(self.model).all())
-
-    def create(self, obj: ModelType) -> ModelType:
-        self.session.add(obj)
-        self.session.commit()
-        self.session.refresh(obj)
+    def create(self, session: Session, obj: ModelType) -> ModelType:
+        session.add(obj)
+        session.commit()
+        session.refresh(obj)
         return obj
 
-    def update(self, obj: ModelType) -> ModelType:
-        self.session.commit()
-        self.session.refresh(obj)
+    def update(self, session: Session, obj: ModelType) -> ModelType:
+        session.commit()
+        session.refresh(obj)
         return obj
 
-    def delete(self, obj: ModelType) -> None:
-        self.session.delete(obj)
-        self.session.commit()
+    def delete(self, session: Session, obj: ModelType) -> None:
+        session.delete(obj)
+        session.commit()

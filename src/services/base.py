@@ -1,5 +1,7 @@
 from typing import Generic, TypeVar
 
+from sqlalchemy.orm import Session
+
 from src.database.base import Base
 from src.repositories.base import BaseRepository
 
@@ -10,17 +12,17 @@ class BaseService(Generic[ModelType]):
     def __init__(self, repository: BaseRepository[ModelType]) -> None:
         self.repository = repository
 
-    def get(self, pk: int) -> ModelType | None:
-        return self.repository.get(pk)
+    def get(self, session: Session, pk: int) -> ModelType | None:
+        return self.repository.get(session, pk)
 
-    def get_all(self) -> list[ModelType]:
-        return self.repository.get_all()
+    def get_all(self, session: Session) -> list[ModelType]:
+        return self.repository.get_all(session)
 
-    def create(self, obj: ModelType) -> ModelType:
-        return self.repository.create(obj)
+    def create(self, session: Session, obj: ModelType) -> ModelType:
+        return self.repository.create(session, obj)
 
-    def update(self, obj: ModelType) -> ModelType:
-        return self.repository.update(obj)
+    def update(self, session: Session, obj: ModelType) -> ModelType:
+        return self.repository.update(session, obj)
 
-    def delete(self, obj: ModelType) -> None:
-        self.repository.delete(obj)
+    def delete(self, session: Session, obj: ModelType) -> None:
+        self.repository.delete(session, obj)
