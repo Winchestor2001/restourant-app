@@ -2,6 +2,7 @@ from typing import Generic, TypeVar
 
 from sqlalchemy.orm import Session
 
+from src.core.exceptions import NotFoundError
 from src.database.base import Base
 from src.repositories.base import BaseRepository
 
@@ -13,6 +14,9 @@ class BaseService(Generic[ModelType]):
         self.repository = repository
 
     def get(self, session: Session, pk: int) -> ModelType | None:
+        db_obj = self.repository.get(session, pk)
+        if not db_obj:
+            raise NotFoundError(detail="Not found")
         return self.repository.get(session, pk)
 
     def get_all(self, session: Session) -> list[ModelType]:
