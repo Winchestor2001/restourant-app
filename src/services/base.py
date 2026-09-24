@@ -3,8 +3,10 @@ from typing import Generic, TypeVar
 from sqlalchemy.orm import Session
 
 from src.core.exceptions import NotFoundError
+from src.core.security import create_access_token, create_refresh_token
 from src.database.base import Base
 from src.repositories.base import BaseRepository
+from src.schemas.auth_schema import TokenSchema
 
 ModelType = TypeVar("ModelType", bound=Base)
 
@@ -12,6 +14,16 @@ ModelType = TypeVar("ModelType", bound=Base)
 class BaseService(Generic[ModelType]):
     def __init__(self, repository: BaseRepository[ModelType]) -> None:
         self.repository = repository
+
+    @staticmethod
+    def _issue_tokens(user_id: int) -> TokenSchema:
+        return TokenSchema.model_validate(
+            {
+                "access_token": create_access_token(user_id),
+                "refresh_token": create_refresh_token(user_id),
+                "token_type": "bearer",
+            }
+        )
 
     def get(self, session: Session, pk: int) -> ModelType | None:
         db_obj = self.repository.get(session, pk)

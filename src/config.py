@@ -13,6 +13,11 @@ class Settings:
     db_pass: str = os.getenv("DB_PASS", "")
     db_echo: bool = os.getenv("DB_ECHO", "False").lower() == "true"
 
+    jwt_secret_key: str = os.getenv("JWT_SECRET_KEY", "")
+    jwt_algorithm: str = os.getenv("JWT_ALGORITHM", "HS256")
+    jwt_access_token_expired_minute: int = os.getenv("JWT_ACCESS_TOKEN_EXPIRED_MINUTE", 10)
+    jwt_refresh_token_expired_minute: int = os.getenv("JWT_ACCESS_TOKEN_EXPIRED_MINUTE", 3600)
+
     @property
     def database_url(self) -> str:
         return (
