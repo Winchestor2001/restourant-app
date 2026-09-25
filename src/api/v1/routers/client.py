@@ -21,7 +21,6 @@ def get_all_clients(
     return service.get_all_client_by_filters(session=session, filters=filters)
 
 
-
 @router.post("/registration", response_model=TokenSchema, status_code=status.HTTP_201_CREATED)
 def create_client(
         payload: ClientCreate,
@@ -44,6 +43,7 @@ def login_client(
 ):
     return service.login(session=session, obj=payload)
 
+
 @router.get("/me", response_model=ClientBase, status_code=status.HTTP_200_OK)
 def get_client_me(
         current_client: Client = Depends(get_current_client),
@@ -64,11 +64,9 @@ def get_client_by_id(
 def update_client(
         payload: ClientUpdate,
         client_id: int,
-        current_client: Client = Depends(get_current_client),
         session: Session = Depends(get_session),
         service: ClientService = Depends(get_client_service),
 ):
-
     return service.update(session, client_id, payload)
 
 
