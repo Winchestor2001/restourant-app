@@ -73,3 +73,14 @@ def get_client_id_from_token(
         return int(payload["sub"])
     except (KeyError, TypeError, ValueError) as exc:
         raise jwt.InvalidTokenError("Invalid subject claim") from exc
+
+
+def get_admin_id_from_token(
+    token: str, expected_type: str = ACCESS_TOKEN_TYPE
+) -> int:
+    payload = decode_token(token, expected_type=expected_type)
+
+    try:
+        return int(payload["sub"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise jwt.InvalidTokenError("Invalid subject claim") from exc

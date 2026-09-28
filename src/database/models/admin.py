@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from src.database.base import Base
+from src.database.models.role import Roles, admin_roles
 
 
 class Admin(Base):
@@ -16,3 +17,7 @@ class Admin(Base):
     hashed_password: Mapped[str] = mapped_column(String(255))
     is_active: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    roles: Mapped[list["Roles"]] = relationship(
+        secondary=admin_roles,
+        lazy="selectin",
+    )

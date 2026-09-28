@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.orm import Session
 
+from src.core.permissions import Permission
 from src.core.security import hash_password
-from src.database.models import Manager
+from src.database.models import Manager, Admin
 from src.schemas.manager_schema import ManagerCreate, ManagerBase, ManagerUpdate, ManagerFilter
-from src.api.v1.dependancies import get_manager_service
+from src.api.v1.dependancies import get_manager_service, require_permission
 from src.services.manager import ManagerService
 from src.database.session import get_session
 
@@ -14,6 +15,7 @@ router = APIRouter(prefix="/managers", tags=["Managers"])
 @router.get("/", response_model=list[ManagerBase])
 def get_all_managers(
         filters: ManagerFilter = Query(None),
+        current_admin: Admin = Depends(require_permission(Permission.MANAGER_READ)),
         session: Session = Depends(get_session),
         service: ManagerService = Depends(get_manager_service),
 ):
@@ -23,6 +25,7 @@ def get_all_managers(
 @router.post("/", response_model=ManagerBase, status_code=status.HTTP_201_CREATED)
 def create_manager(
         payload: ManagerCreate,
+        current_admin: Admin = Depends(require_permission(Permission.MANAGER_WRITE)),
         session: Session = Depends(get_session),
         service: ManagerService = Depends(get_manager_service),
 ):
