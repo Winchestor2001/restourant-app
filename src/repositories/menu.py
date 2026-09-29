@@ -1,8 +1,6 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
 
-from src.database.models import Category
-from src.schemas.menu_schema import MenuCreate, MenuFilter
+from src.schemas.menu_schema import MenuFilter
 from src.database.models.menu import Menu
 from src.repositories.base import BaseRepository
 

@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from src.database.base import Base
-from src.database.models.role import Roles, admin_roles
+from src.database.models.role import Roles, AdminRoles
 
 
 class Admin(Base):
@@ -18,6 +18,6 @@ class Admin(Base):
     is_active: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     roles: Mapped[list["Roles"]] = relationship(
-        secondary=admin_roles,
+        secondary=AdminRoles.__table__,
         lazy="selectin",
     )

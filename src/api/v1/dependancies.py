@@ -19,6 +19,8 @@ from src.services.admin import AdminService
 from src.repositories.admin import AdminRepository
 from src.repositories.category import CategoryRepository
 from src.services.category import CategoryService
+from src.services.permission import RoleService, PermissionService, RolePermissionsService
+from src.repositories.permission import RoleRepository, PermissionRepository, RolePermissionsRepository
 
 client_access_token_scheme = HTTPBearer(scheme_name="client-access-token", auto_error=False)
 admin_access_token_scheme = HTTPBearer(scheme_name="admin-access-token", auto_error=False)
@@ -48,6 +50,22 @@ def get_menu_service() -> MenuService:
 def get_client_service() -> ClientService:
     repository = ClientRepository()
     return ClientService(repository)
+
+
+def get_role_service() -> RoleService:
+    repository = RoleRepository()
+    return RoleService(repository)
+
+
+def get_role_permission_service() -> RolePermissionsService:
+    role_repo = RoleRepository()
+    role_permission_repo = RolePermissionsRepository()
+    return RolePermissionsService(role_repo, role_permission_repo)
+
+
+def get_permission_service() -> PermissionService:
+    repository = PermissionRepository()
+    return PermissionService(repository)
 
 
 def get_current_client(
@@ -118,7 +136,7 @@ def get_current_admin(
 
 def require_all(*codes: Permission):
     def dependency(
-        current_admin: Admin = Depends(get_current_admin),
+            current_admin: Admin = Depends(get_current_admin),
     ) -> Admin:
         missing = [
             code for code in codes if not admin_has_permission(current_admin, code)
